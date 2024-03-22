@@ -47,7 +47,7 @@ const Login = () => {
     if (!isValid) return;
 
     try {
-      const response = await axios.post(`${baseURL}/user/login`, {
+      const response = await axios.post(`http://localhost:3000/user/login`, {
         email: inputs.email,
         password: inputs.password
       });
