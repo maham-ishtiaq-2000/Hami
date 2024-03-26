@@ -89,7 +89,9 @@ const Home = () => {
                       <OrderList key={index} product={product}/>
                    ))}
               </div>
-              <PaymentSummary></PaymentSummary>
+ 
+                 <PaymentSummary></PaymentSummary>
+             
           </div>
         </div>
       </div>

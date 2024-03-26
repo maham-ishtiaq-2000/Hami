@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import dresser from '../../assets/dresser.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faMinus, faPlus , faTrash} from '@fortawesome/free-solid-svg-icons';
 import { useProductData } from '../../context/index';
 
 const OrderList = ({ product }) => {
@@ -58,7 +58,7 @@ const OrderList = ({ product }) => {
           />
         </div>
         <button className='mr-5' onClick={handleDeleteClick}>
-          <i className="fa fa-trash-o" style={{"fontSize":"47px", color : '#FA8072'}}></i>
+           <FontAwesomeIcon icon={faTrash} style={{"fontSize":"38px", color : '#FA8072'}}></FontAwesomeIcon>
         </button>
       </div>
     </div>

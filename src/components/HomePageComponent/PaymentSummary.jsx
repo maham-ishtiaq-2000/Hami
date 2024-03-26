@@ -1,5 +1,6 @@
 import React from 'react';
 import { useProductData } from '../../context';
+import { useNavigate } from 'react-router-dom';
 
 const PaymentSummary = () => {
   const {cart} = useProductData();
@@ -11,6 +12,12 @@ const PaymentSummary = () => {
     const discount = 0
     const deliveryFee = 0
     const pendingFee = 0
+
+    const navigate = useNavigate(); 
+
+    const handleContinueToPayment = () => {
+      navigate('/orderPage'); 
+    };
 
   return (
     <div className="p-5 text-gray-400 w-full mx-auto rounded-lg dark:text-pink">
@@ -30,7 +37,7 @@ const PaymentSummary = () => {
         <span className="font-semibold">SUB TOTAL</span>
         <span className="font-semibold text-white dark:text-black" >{Math.round(totalValue + discount + deliveryFee + pendingFee)}</span>
       </div>
-      <button className="bg-pink text-white w-full py-3 mt-4 rounded-lg hover:bg-slightlyDarkPink transition-colors font-semibold">
+      <button className="bg-pink text-white w-full py-3 mt-4 rounded-lg hover:bg-slightlyDarkPink transition-colors font-semibold" onClick={handleContinueToPayment}>
         Continue to Payment
       </button>
     </div>
