@@ -4,15 +4,42 @@ import OrderList from '../components/HomePageComponent/OrderList';
 import OrderPaymentSummary from '../components/OrderPageComponent/OrderPaymentSummary';
 import { useProductData } from '../context/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { faPrint, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 
 
 const OrderPage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const { cart } = useProductData();
+  const navigate = useNavigate();
+  const { cart,totalCartValue } = useProductData();
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isFormVisible2, setIsFormVisible2] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    phoneNumber: '',
+    email: '',
+    address: '',
+  });
+  const [formValues, setFormValues] = useState({
+    shippingFee: '',
+    paymentBy: '',
+    amountPaid: '',
+    pendingPayment: 0,
+    specialNote: '',
+  });
+
+  useEffect(() => {
+    const amountPaid = Number(formValues.amountPaid)
+    const pendingPayment = totalCartValue-amountPaid
+    setFormValues(prevValues => ({
+      ...prevValues,
+      pendingPayment: pendingPayment // This should now always be a valid number
+    }));
+  }, [formValues.amountPaid]); 
+
+  const [errors, setErrors] = useState({});
+
 
   const toggleForm = () => {
     setIsFormVisible(!isFormVisible);
@@ -24,10 +51,98 @@ const OrderPage = () => {
   
   
 
-  const handleSearch = (e) => {
-    e.preventDefault(); 
-    console.log(searchTerm); 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
+
+  const handleInputform2Change = (e) => {
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
+
+  };
+
+  const validateForm = () => {
+    let tempErrors = {};
+    tempErrors.shippingFee = formValues.shippingFee ? '' : 'Shipping Fee is required';
+    tempErrors.amountPaid = formValues.amountPaid ? '' : 'Amount Paid is required';
+    tempErrors.paymentBy = formValues.paymentBy ? '' : 'Payment Method is required'; // Corrected from paymentMethod to paymentBy
+    setErrors(tempErrors);
+    return Object.values(tempErrors).every(x => x === '');
+  };
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    if (validateForm()) {
+      const postData = {
+        items: cart.map(product => ({
+          product: product._id,
+          quantity: product.quantity
+        })),
+        totalAmount: totalCartValue,
+        shippingFee: Number(formValues.shippingFee),
+        paymentBy: formValues.paymentBy,
+        amountPaid: Number(formValues.amountPaid),
+        balanceDue: formValues.pendingPayment,
+        specialNote: formValues.specialNote,
+        customer: formData
+      };
+  
+      try {
+        // Simulate the API call with a promise
+        const promise = fetch('http://localhost:3000/sale', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(postData),
+        }).then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        });
+  
+        toast.promise(
+          promise,
+          {
+            pending: 'Processing payment...',
+            success: 'Payment done successfully! Reloading...',
+            error: 'Failed to process payment!',
+          }
+        ).then(() => {
+          setTimeout(() => {
+            window.location.reload();
+            navigate("/Home");
+          }, 2000); 
+        }).catch((error) => {
+          console.error('Error during the fetch operation:', error);
+        });
+      } catch (error) {
+        toast.error('An unexpected error occurred.');
+        console.error('Error:', error);
+      }
+    } else {
+      console.log("Validation failed");
+    }
+  };
+  
+  
+
+  const setPaymentMethodHandle = (method) => {
+    setFormValues({ ...formValues, paymentBy: method });
+  };
+
+
+
+  
+ 
+  
+  
+
   
 
   return (
@@ -35,6 +150,7 @@ const OrderPage = () => {
       <Sidebar />
       <div className="flex-1 overflow-hidden" style={{ marginLeft: '100px' }}>
         <div className="flex flex-col md:flex-row h-full">
+          
 
            <div className="w-full md:w-40p p-3 bg-lightNavy dark:bg-offWhite h-full overflow-y-auto">
             <div className="flex-1" >
@@ -45,118 +161,149 @@ const OrderPage = () => {
                 </div>
             </div>
             <h1 className="text-gray-500 text-1xl mt-1 pl-4 dark:text-gray-500">Frame 1427</h1>
-            <div className="max-w-4xl mx-auto bg-navy rounded-lg p-3" style={{"width" : "8000px"}}>
-                <div className="flex justify-between items-center">
-                  <h2 className="text-2xl text-pink">Personal Information</h2>
-                  <button
-                      onClick={toggleForm}
-                      className={`text-sm p-2 rounded-full ${isFormVisible ? 'bg-red-600' : 'bg-red-500'}`}
-                    >
-                      {isFormVisible ? (
-                        <i className="fas fa-angle-up text-pink text-2xl px-2 border border-pink  inline-block"></i>
-                      ) : (
-                        <i className="fas fa-angle-down text-pink text-2xl px-2 border border-pink  inline-block"></i>
-                      )}
-                    </button>
-
-                </div>
-                {isFormVisible && (
-                   <form class="w-full max-w-lg">
-                   <div class="flex flex-wrap -mx-3 mb-6" style={{"width" : "174%"}}>
-                      <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0 md:pr-6" > 
-                        <label class="block tracking-wide text-white mb-1 text-1xl mt-2 font-bold mb-2 " for="grid-first-name">
-                          Name
-                        </label>
-                        <input class="appearance-none block w-full bg-navy text-gray-700 text-white border border-pink rounded py-3 px-4 mb-3 leading-tight focus:outline-none " id="grid-first-name" type="text" placeholder="Name" />
-                      </div>
-                      <div class="w-full md:w-1/2 px-3">
-                        <label class="block tracking-wide text-white mb-1 text-1xl mt-2 font-bold mb-2" for="grid-last-name">
-                          Phone Number
-                        </label>
-                        <input class="appearance-none block w-full bg-navy text-gray-700 text-white border border-pink rounded py-3 px-4 mb-3 leading-tight focus:outline-none" id="grid-last-name" type="text" placeholder="Email" />
-                      </div>
-                    </div>
-
-                   <div class="flex flex-wrap -mx-3 mb-6" style={{"width" : "174%"}}>
-                     <div class="w-full px-3">
-                       <label class="block tracking-wide text-white mb-1 text-1xl font-bold mb-2 " for="grid-password">
-                         Email Address
-                       </label>
-                       <input class="appearance-none block w-full bg-navy text-gray-700 text-white border border-pink rounded py-3 px-4 mb-3 leading-tight focus:outline-none" id="grid-password" type="text" placeholder="Email Address" />
-                     </div>
-                   </div>
-                   <div class="flex flex-wrap -mx-3 mb-6" style={{"width" : "174%"}}>
-                     <div class="w-full px-3">
-                       <label class="block tracking-wide text-white mb-1 text-1xl font-bold mb-2 "  for="grid-password">
-                         Address
-                       </label>
-                       <input class="appearance-none block w-full bg-navy text-gray-700 text-white border border-pink rounded py-3 px-4 mb-3 leading-tight focus:outline-none" id="grid-password" type="text" placeholder="Address" />
-                     </div>
-                   </div>
-                  
-                 </form>
-                )}
+            <div className="mx-auto bg-navy rounded-lg p-3 w-full md:max-w-4xl">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl text-pink">Personal Information</h2>
+                <button
+                    onClick={toggleForm}
+                    className={`text-sm p-2 rounded-full ${isFormVisible ? 'bg-red-600' : 'bg-red-500'}`}
+                  >
+                    {isFormVisible ? (
+                      <i className="fas fa-angle-up text-pink text-2xl px-2 border border-pink inline-block"></i>
+                    ) : (
+                      <i className="fas fa-angle-down text-pink text-2xl px-2 border border-pink inline-block"></i>
+                    )}
+                </button>
               </div>
+              {isFormVisible && (
+                <form className="w-full">
+                  <div className="flex flex-wrap -mx-3 mb-6">
+                    <div className="w-full px-3 mb-6 md:mb-0 md:w-1/2"> 
+                      <label className="block tracking-wide text-white text-xl md:text-lg font-bold mb-2" htmlFor="grid-first-name">
+                        Name
+                      </label>
+                      <input 
+                        className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" 
+                        id="grid-first-name" 
+                        type="text" 
+                        placeholder="Name" 
+                        name="name" 
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="w-full px-3 md:w-1/2">
+                      <label className="block tracking-wide text-white text-xl md:text-lg font-bold mb-2" htmlFor="grid-last-name">
+                        Phone Number
+                      </label>
+                      <input 
+                        className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" 
+                        id="grid-last-name" 
+                        type="text" 
+                        placeholder="Phone Number" 
+                        name="phoneNumber" 
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap -mx-3 mb-6">
+                    <div className="w-full px-3">
+                      <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="grid-password">
+                        Email Address
+                      </label>
+                      <input className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="grid-password" type="text" placeholder="Email Address" name="email" onChange={handleInputChange}/>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap -mx-3 mb-6">
+                    <div className="w-full px-3">
+                      <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="grid-password">
+                        Address
+                      </label>
+                      <input className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="grid-password" type="text" placeholder="Address" name="address" onChange={handleInputChange} />
+                    </div>
+                  </div>
+                </form>
+              )}
+            </div>
+
               <h1 className="text-gray-500 text-1xl mt-3 pl-4 dark:text-gray-500">Frame 1427</h1>
-              <div className="max-w-4xl mx-auto bg-navy p-3 rounded-lg" style={{"width" : "8000px"}}>
-                <div className="flex justify-between items-center">
-                  <h2 className="text-2xl text-pink">Billing Information</h2>
-                  <button
-                      onClick={toggleForm2}
-                      className={`text-sm p-2 rounded-full ${isFormVisible2 ? 'bg-red-600' : 'bg-red-500'}`}
-                    >
-                      {isFormVisible2 ? (
-                        <i className="fas fa-angle-up text-pink text-2xl px-2 border border-pink  inline-block"></i>
-                      ) : (
-                        <i className="fas fa-angle-down text-pink text-2xl px-2 border border-pink  inline-block"></i>
-                      )}
-                    </button>
-
-                </div>
-                {isFormVisible2 && (
-                   <form class="w-full max-w-lg">
-                   <div class="flex flex-wrap -mx-3 mb-6" style={{"width" : "170%"}}>
-                      <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0 md:pr-6" > 
-                        <label class="block tracking-wide text-white mb-1 text-1xl mt-2 font-bold mb-2 " for="grid-first-name">
-                          Shipping Fee
-                        </label>
-                        <input class="appearance-none block w-full bg-navy text-gray-700 text-white border border-pink rounded py-3 px-4 mb-3 leading-tight focus:outline-none " id="grid-first-name" type="text" placeholder="Shipping Fee" />
-                      </div>
-                      <div class="w-full md:w-1/2 px-3">
-                        <label class="block tracking-wide text-white mb-1 text-1xl mt-2 font-bold mb-2" for="grid-last-name">
-                          Phone Number
-                        </label>
-                        <input class="appearance-none block w-full bg-navy text-gray-700 text-white border border-pink rounded py-3 px-4 mb-3 leading-tight focus:outline-none" id="grid-last-name" type="text" placeholder="Email" />
-                      </div>
-                    </div>
-
-                    <div class="flex flex-wrap -mx-3 mb-6" style={{"width" : "170%"}}>
-                      <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0 md:pr-6" > 
-                        <label class="block tracking-wide text-white mb-1 text-1xl mt-2 font-bold mb-2 " for="grid-first-name">
-                          Amount Paid
-                        </label>
-                        <input class="appearance-none block w-full bg-navy text-gray-700 text-white border border-pink rounded py-3 px-4 mb-3 leading-tight focus:outline-none " id="grid-first-name" type="text" placeholder="Amount Paid" />
-                      </div>
-                      <div class="w-full md:w-1/2 px-3">
-                        <label class="block tracking-wide text-white mb-1 text-1xl mt-2 font-bold mb-2" for="grid-last-name">
-                          Pending Payment
-                        </label>
-                        <input class="appearance-none block w-full bg-navy text-gray-700 text-white border border-pink rounded py-3 px-4 mb-3 leading-tight focus:outline-none" id="grid-last-name" type="text" placeholder="Pending Payment" />
-                      </div>
-                    </div>
-
-                   <div class="flex flex-wrap -mx-3 mb-6" style={{"width" : "170%"}}>
-                     <div class="w-full px-3">
-                       <label class="block tracking-wide text-white mb-1 text-1xl font-bold mb-2 "  for="grid-password">
-                         Special Note
-                       </label>
-                       <input class="appearance-none block w-full bg-navy text-gray-700 text-white border border-pink rounded py-3 px-4 mb-3 leading-tight focus:outline-none" id="grid-password" type="text" placeholder="Special Note" />
-                     </div>
-                   </div>
-                  
-                 </form>
+              <div className="mx-auto bg-navy rounded-lg p-3 w-full md:max-w-4xl">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl text-pink">Billing Information</h2>
+              <button onClick={toggleForm2} className={`text-sm p-2 rounded-full ${isFormVisible2 ? 'bg-red-600' : 'bg-red-500'}`}>
+                {isFormVisible2 ? (
+                  <i className="fas fa-angle-up text-pink text-2xl px-2 border border-pink inline-block"></i>
+                ) : (
+                  <i className="fas fa-angle-down text-pink text-2xl px-2 border border-pink inline-block"></i>
                 )}
-              </div>
+              </button>
+            </div>
+            {isFormVisible2 && (
+              <form className="w-full" onSubmit={handleSubmit}>
+                <div className="flex flex-wrap -mx-3 mb-6">
+                  <div className="w-full px-3 mb-6 md:mb-0 md:w-1/2"> 
+                    <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="grid-first-name">
+                      Shipping Fee
+                    </label>
+                    <input className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="grid-first-name" type="text" placeholder="Shipping Fee" name="shippingFee" onChange={handleInputform2Change}/>
+                    {errors.shippingFee && <p className="text-pink text-xs mt-1 italic">{errors.shippingFee}</p>}
+                  </div>
+                  <div className="w-full px-3 md:w-1/2">
+                    <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="grid-last-name">
+                      Payment By
+                    </label>
+                    <div className="flex items-center">
+                                    <label className="flex items-center space-x-2 text-pink">
+                                      <input
+                                        type="checkbox"
+                                        checked={formValues.paymentBy === 'ATM'}
+                                        onChange={() => setPaymentMethodHandle('ATM')}
+                                        className="form-checkbox h-5 w-5 text-pink bg-pink checked:bg-pink"
+                                      />
+                                      <span className="text-pink text-1xl">ATM</span>
+                                    </label>
+
+                                    <label className="flex items-center space-x-2 ml-4">
+                                      <input
+                                        type="checkbox"
+                                        checked={formValues.paymentBy === 'Cash'}
+                                        onChange={() => setPaymentMethodHandle('Cash')}
+                                        className="form-checkbox h-5 w-5 text-blue-600" 
+                                      />
+                                      <span className="text-pink">Cash</span>
+                                    </label>
+                                  </div>
+                    {errors.paymentMethod && <p className="text-pink text-xs mt-4 italic">{errors.paymentMethod}</p>}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap -mx-3 mb-6">
+                  <div className="w-full px-3 mb-6 md:mb-0 md:w-1/2"> 
+                    <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="amount-paid">
+                      Amount Paid
+                    </label>
+                    <input className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="amount-paid" type="text" placeholder="Amount Paid" name="amountPaid" onChange={handleInputform2Change} />
+                    {errors.amountPaid && <p className="text-pink text-xs mt-1 italic">{errors.amountPaid}</p>}
+                  </div>
+                  <div className="w-full px-3 md:w-1/2">
+                    <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="pending-payment">
+                      Pending Payment
+                    </label>
+                    <input className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="pending-payment" type="text" placeholder="0" name="pendingPayment" value={formValues.pendingPayment} readOnly />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap -mx-3 mb-6">
+                  <div className="w-full px-3">
+                    <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="special-note">
+                      Special Note
+                    </label>
+                    <input className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="special-note" type="text" placeholder="Special Note" name="specialNote" onChange={handleInputform2Change}/>
+                  </div>
+                </div>
+              </form>
+            )}
+          </div>
+
           </div>
 
           
@@ -193,13 +340,12 @@ const OrderPage = () => {
                       <OrderList key={index} product={product}/>
                    ))}
               </div>
-              <OrderPaymentSummary></OrderPaymentSummary>
+              <OrderPaymentSummary shippingFee={formValues.shippingFee}></OrderPaymentSummary>
               </div>
 
-              <div className="flex justify-start items-center space-x-4 mt-7" style={{"width" : "100%"}}>
-                    {/* First button */}
+              <div className="flex justify-start items-center space-x-4 mt-7 md:space-x-4" style={{"width" : "100%"}}>
                     <button
-                      className="bg-lightNavy text-pink font-bold py-4 px-4 rounded inline-flex border border-pink items-center"
+                      className="bg-lightNavy text-pink font-bold py-2 px-4 rounded inline-flex border border-pink items-center"
                       style={{"width" : "50%"}}
                     >
                       <FontAwesomeIcon className="text-3xl mb-2 ml-10 mr-7 mt-1 text-pink" icon={faPrint} />
@@ -210,13 +356,14 @@ const OrderPage = () => {
 
           
                     <button
-                      className="bg-pink text-white font-bold py-4 px-4 rounded inline-flex border border-pink items-center"
-                      style={{"width" : "50%"}}
+                      className="bg-pink text-white font-bold py-2 px-4 rounded inline-flex border border-pink items-center"
+                      style={{"width" : "45%"}}
+                      onClick={handleSubmit}
                     >
                       <FontAwesomeIcon className="text-3xl mb-2 ml-10 mr-7 mt-1 text-white" icon={faCheck} />
                       Confirm Order
                     </button>
-                </div>
+              </div>
               
           </div>
         </div>

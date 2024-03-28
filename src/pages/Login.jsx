@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { baseURL } from '../config/axiosInstance';
 import axios from 'axios';
 
 const Login = () => {

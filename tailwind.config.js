@@ -29,7 +29,8 @@ module.exports = {
       },
       height: {
         '90screen': '93.5vh',
-      }   
+      },
+      backgroundColor: ['checked'],   
     },
   },
   plugins: [],
