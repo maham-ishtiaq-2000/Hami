@@ -1,0 +1,23 @@
+
+    .custom-checkbox:checked + span::before {
+      background-color: #f472b6; /* Example pink color, adjust as needed */
+      border-color: #f472b6; /* Ensure the border color matches the background */
+    }
+    .custom-checkbox:checked {
+      background-color: #f472b6; /* For ensuring full coverage in all browsers */
+      border-color: #f472b6;
+    }
+    .custom-checkbox:checked + span::after {
+      content: '✓';
+      color: black; /* This makes the tick mark black */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 16px; /* Adjust size as needed */
+    }
+
+    .custom-checkbox:checked:after{
+        background-color:green;
+        }
+        

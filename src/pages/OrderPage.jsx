@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import Sidebar from '../components/Layouts/SideBar';
+import { Checkbox} from "@mui/material";
 import OrderList from '../components/HomePageComponent/OrderList';
 import OrderPaymentSummary from '../components/OrderPageComponent/OrderPaymentSummary';
 import { useProductData } from '../context/index';
@@ -7,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { faPrint, faCheck } from '@fortawesome/free-solid-svg-icons';
+import './OrderPage.css';
 
 
 
@@ -148,11 +150,11 @@ const OrderPage = () => {
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <Sidebar />
-      <div className="flex-1 overflow-hidden" style={{ marginLeft: '100px' }}>
+      <div className="flex-1" style={{ marginLeft: '100px' }}>
         <div className="flex flex-col md:flex-row h-full">
           
 
-           <div className="w-full md:w-40p p-3 bg-lightNavy dark:bg-offWhite h-full overflow-y-auto">
+           <div className="w-full md:w-40p p-3 bg-lightNavy dark:bg-offWhite h-full">
             <div className="flex-1" >
                 <div className="flex flex-col md:flex-row">
                   <div className="w-full md:w-60p p-4 bg-lightNavy dark:bg-offWhite">
@@ -160,10 +162,9 @@ const OrderPage = () => {
                   </div>
                 </div>
             </div>
-            <h1 className="text-gray-500 text-1xl mt-1 pl-4 dark:text-gray-500">Frame 1427</h1>
-            <div className="mx-auto bg-navy rounded-lg p-3 w-full md:max-w-4xl">
+            <div className="mx-auto bg-navy dark:bg-white dark:text-pink rounded-lg p-3 w-full md:max-w-4xl mt-4">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl text-pink">Personal Information</h2>
+                <h2 className="text-2xl text-pink mb-5">Personal Information</h2>
                 <button
                     onClick={toggleForm}
                     className={`text-sm p-2 rounded-full ${isFormVisible ? 'bg-red-600' : 'bg-red-500'}`}
@@ -179,11 +180,11 @@ const OrderPage = () => {
                 <form className="w-full">
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className="w-full px-3 mb-6 md:mb-0 md:w-1/2"> 
-                      <label className="block tracking-wide text-white text-xl md:text-lg font-bold mb-2" htmlFor="grid-first-name">
+                      <label className="block tracking-wide text-white text-xl md:text-lg font-semibold mb-2 dark:bg-white dark:text-black" htmlFor="grid-first-name">
                         Name
                       </label>
                       <input 
-                        className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" 
+                        className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 dark:bg-white dark:text-black px-4 leading-tight focus:outline-none" 
                         id="grid-first-name" 
                         type="text" 
                         placeholder="Name" 
@@ -192,11 +193,11 @@ const OrderPage = () => {
                       />
                     </div>
                     <div className="w-full px-3 md:w-1/2">
-                      <label className="block tracking-wide text-white text-xl md:text-lg font-bold mb-2" htmlFor="grid-last-name">
+                      <label className="block tracking-wide text-white text-xl md:text-lg font-semibold mb-2 dark:bg-white dark:text-black" htmlFor="grid-last-name">
                         Phone Number
                       </label>
                       <input 
-                        className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" 
+                        className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight dark:bg-white dark:text-black focus:outline-none" 
                         id="grid-last-name" 
                         type="text" 
                         placeholder="Phone Number" 
@@ -207,28 +208,28 @@ const OrderPage = () => {
                   </div>
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className="w-full px-3">
-                      <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="grid-password">
+                      <label className="block tracking-wide text-white text-xl dark:bg-white dark:text-black font-semibold mb-2" htmlFor="grid-password">
                         Email Address
                       </label>
-                      <input className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="grid-password" type="text" placeholder="Email Address" name="email" onChange={handleInputChange}/>
+                      <input className="appearance-none block w-full bg-navy dark:bg-white dark:text-black text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="grid-password" type="text" placeholder="Email Address" name="email" onChange={handleInputChange}/>
                     </div>
                   </div>
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className="w-full px-3">
-                      <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="grid-password">
+                      <label className="block tracking-wide text-white text-xl dark:bg-white dark:text-black font-semibold mb-2" htmlFor="grid-password">
                         Address
                       </label>
-                      <input className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="grid-password" type="text" placeholder="Address" name="address" onChange={handleInputChange} />
+                      <input className="appearance-none block w-full bg-navy dark:bg-white dark:text-black text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="grid-password" type="text" placeholder="Address" name="address" onChange={handleInputChange} />
                     </div>
                   </div>
                 </form>
               )}
             </div>
 
-              <h1 className="text-gray-500 text-1xl mt-3 pl-4 dark:text-gray-500">Frame 1427</h1>
-              <div className="mx-auto bg-navy rounded-lg p-3 w-full md:max-w-4xl">
+  
+              <div className="mx-auto bg-navy rounded-lg p-3 dark:bg-white dark:text-black w-full mt-3 md:max-w-4xl">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl text-pink">Billing Information</h2>
+              <h2 className="text-2xl text-pink mb-3">Billing Information</h2>
               <button onClick={toggleForm2} className={`text-sm p-2 rounded-full ${isFormVisible2 ? 'bg-red-600' : 'bg-red-500'}`}>
                 {isFormVisible2 ? (
                   <i className="fas fa-angle-up text-pink text-2xl px-2 border border-pink inline-block"></i>
@@ -241,63 +242,97 @@ const OrderPage = () => {
               <form className="w-full" onSubmit={handleSubmit}>
                 <div className="flex flex-wrap -mx-3 mb-6">
                   <div className="w-full px-3 mb-6 md:mb-0 md:w-1/2"> 
-                    <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="grid-first-name">
+                    <label className="block tracking-wide text-white text-xl font-semibold dark:bg-white dark:text-black  mb-2" htmlFor="grid-first-name">
                       Shipping Fee
                     </label>
-                    <input className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="grid-first-name" type="text" placeholder="Shipping Fee" name="shippingFee" onChange={handleInputform2Change}/>
+                    <input className="appearance-none block dark:bg-white dark:text-black w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="grid-first-name" type="text" placeholder="Shipping Fee" name="shippingFee" onChange={handleInputform2Change}/>
                     {errors.shippingFee && <p className="text-pink text-xs mt-1 italic">{errors.shippingFee}</p>}
                   </div>
                   <div className="w-full px-3 md:w-1/2">
-                    <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="grid-last-name">
+                    <label className="block tracking-wide text-white dark:bg-white dark:text-black text-xl font-semibold mb-2" htmlFor="grid-last-name">
                       Payment By
                     </label>
-                    <div className="flex items-center">
-                                    <label className="flex items-center space-x-2 text-pink">
-                                      <input
-                                        type="checkbox"
+                    <div className="flex items-center custom-checkbox">
+                                    <label className="flex items-center space-x-2  dark:bg-white dark:text-black text-pink custom-checkbox">
+                                    <Checkbox
                                         checked={formValues.paymentBy === 'ATM'}
                                         onChange={() => setPaymentMethodHandle('ATM')}
-                                        className="form-checkbox h-5 w-5 text-pink bg-pink checked:bg-pink"
+                                        sx={{
+                                          height: '30px', // Set height
+                                          width: '30px', // Set width
+                                          padding: '2px',
+                                          border: '3px solid', // Specify border width and style
+                                          borderColor: 'pink', // Set border color to pink
+                                          borderRadius: '4px', // Optionally add border radius if you want rounded corners
+                                          '& .MuiSvgIcon-root': { // Target the inner SVG icon for resizing if needed
+                                            fontSize: '2.5rem', // Adjust the icon size to match the checkbox size
+                                          },
+                                          '&.Mui-checked': {
+                                            color: '#FA8072', // Set the color when checked
+                                            '&:after': {
+                                              content: '""',
+                                              position: 'absolute',
+                                              backgroundColor: 'pink',
+                                            },
+                                          },
+                                        }}
                                       />
-                                      <span className="text-pink text-1xl">ATM</span>
+                                      <span className="text-pink text-lg">ATM</span>
                                     </label>
 
-                                    <label className="flex items-center space-x-2 ml-4">
-                                      <input
-                                        type="checkbox"
+                                    <label className="flex items-center space-x-2 ml-4 custom-checkbox">
+                                       <Checkbox
                                         checked={formValues.paymentBy === 'Cash'}
                                         onChange={() => setPaymentMethodHandle('Cash')}
-                                        className="form-checkbox h-5 w-5 text-blue-600" 
+                                        sx={{
+                                          height: '30px', // Set height
+                                          width: '30px', // Set width
+                                          padding: '2px',
+                                          border: '3px solid', // Specify border width and style
+                                          borderColor: 'pink', // Set border color to pink
+                                          borderRadius: '4px', // Optionally add border radius if you want rounded corners
+                                          '& .MuiSvgIcon-root': { // Target the inner SVG icon for resizing if needed
+                                            fontSize: '2.5rem', // Adjust the icon size to match the checkbox size
+                                          },
+                                          '&.Mui-checked': {
+                                            color: '#FA8072', // Set the color when checked
+                                            '&:after': {
+                                              content: '""',
+                                              position: 'absolute',
+                                              backgroundColor: 'pink',
+                                            },
+                                          },
+                                        }}
                                       />
                                       <span className="text-pink">Cash</span>
                                     </label>
-                                  </div>
+                          </div>
                     {errors.paymentMethod && <p className="text-pink text-xs mt-4 italic">{errors.paymentMethod}</p>}
                   </div>
                 </div>
 
                 <div className="flex flex-wrap -mx-3 mb-6">
                   <div className="w-full px-3 mb-6 md:mb-0 md:w-1/2"> 
-                    <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="amount-paid">
+                    <label className="block tracking-wide dark:bg-white dark:text-black text-white text-xl font-semibold mb-2" htmlFor="amount-paid">
                       Amount Paid
                     </label>
-                    <input className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="amount-paid" type="text" placeholder="Amount Paid" name="amountPaid" onChange={handleInputform2Change} />
+                    <input className="appearance-none block w-full bg-navy dark:bg-white dark:text-black text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="amount-paid" type="text" placeholder="Amount Paid" name="amountPaid" onChange={handleInputform2Change} />
                     {errors.amountPaid && <p className="text-pink text-xs mt-1 italic">{errors.amountPaid}</p>}
                   </div>
                   <div className="w-full px-3 md:w-1/2">
-                    <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="pending-payment">
+                    <label className="block tracking-wide text-white dark:bg-white dark:text-black text-xl font-semibold mb-2" htmlFor="pending-payment">
                       Pending Payment
                     </label>
-                    <input className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="pending-payment" type="text" placeholder="0" name="pendingPayment" value={formValues.pendingPayment} readOnly />
+                    <input className="appearance-none block w-full bg-navy dark:bg-white dark:text-black text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="pending-payment" type="text" placeholder="0" name="pendingPayment" value={formValues.pendingPayment} readOnly />
                   </div>
                 </div>
 
                 <div className="flex flex-wrap -mx-3 mb-6">
                   <div className="w-full px-3">
-                    <label className="block tracking-wide text-white text-xl font-bold mb-2" htmlFor="special-note">
+                    <label className="block tracking-wide text-white dark:bg-white dark:text-black text-xl font-semibold mb-2" htmlFor="special-note">
                       Special Note
                     </label>
-                    <input className="appearance-none block w-full bg-navy text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="special-note" type="text" placeholder="Special Note" name="specialNote" onChange={handleInputform2Change}/>
+                    <input className="appearance-none block w-full bg-navy dark:bg-white dark:text-black text-white border border-pink rounded py-3 px-4 leading-tight focus:outline-none" id="special-note" type="text" placeholder="Special Note" name="specialNote" onChange={handleInputform2Change}/>
                   </div>
                 </div>
               </form>
@@ -312,9 +347,9 @@ const OrderPage = () => {
           
 
 
-          <div className="w-full h-full md:w-60p p-4 bg-lightNavy dark:bg-white" >
-            <div className='bg-navy p-3 mt-20' style={{"height" : "80%"}}>
-          <p className="mt-3 text-lg font-semibold text-gray-500 mb-1 dark:text-black">Selector</p>
+          <div className="w-full h-full md:w-60p p-4 bg-lightNavy dark:bg-offWhite" >
+            <div className='bg-navy dark:bg-white  p-3 px-7 pt-5 mt-20' style={{"height" : "80%"}}>
+          <p className="mt-3 text-lg font-semibold text-gray-500 mb-1 dark:text-gray-500">Selector</p>
             <button className="bg-pink hover:bg-slightlyDarkPink  text-white font-semibold py-2 px-4 rounded">
                 ORDER
             </button>
@@ -345,11 +380,11 @@ const OrderPage = () => {
 
               <div className="flex justify-start items-center space-x-4 mt-7 md:space-x-4" style={{"width" : "100%"}}>
                     <button
-                      className="bg-lightNavy text-pink font-bold py-2 px-4 rounded inline-flex border border-pink items-center"
+                      className="bg-lightNavy text-pink font-bold py-2 px-4 rounded inline-flex dark:bg-offWhite border border-2 border-pink items-center"
                       style={{"width" : "50%"}}
                     >
                       <FontAwesomeIcon className="text-3xl mb-2 ml-10 mr-7 mt-1 text-pink" icon={faPrint} />
-                      Print Receipt
+                      <p className='text-lg'>Print Receipt</p>
                     </button>
 
                     <div className="w-1"></div> 
@@ -360,8 +395,8 @@ const OrderPage = () => {
                       style={{"width" : "45%"}}
                       onClick={handleSubmit}
                     >
-                      <FontAwesomeIcon className="text-3xl mb-2 ml-10 mr-7 mt-1 text-white" icon={faCheck} />
-                      Confirm Order
+                      <FontAwesomeIcon className="text-3xl mb-2 ml-3 mr-7 mt-1 text-white" icon={faCheck} />
+                      <p className='text-lg'>Confirm Order</p>
                     </button>
               </div>
               
